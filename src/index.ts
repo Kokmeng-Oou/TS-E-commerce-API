@@ -38,9 +38,9 @@ app.get('/', (req: Request, res: Response) => {
   res.send('welcome to e-commerce-api')
 })
 
-app.use('/api/v1/auth', authRoutes)
-app.use('/api/v1/users', userRoutes)
-app.use('/api/v1/products', productRoutes)
+app.use(`${env.ROUTES_URL}auth`, authRoutes)
+app.use(`${env.ROUTES_URL}users`, userRoutes)
+app.use(`${env.ROUTES_URL}products`, productRoutes)
 
 // middleware
 app.use(notFoundMiddleware)

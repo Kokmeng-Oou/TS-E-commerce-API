@@ -6,6 +6,7 @@ type Env = {
   MONGO_URL: string
   JWT_SECRET: string
   EXPIRES_IN: string
+  ROUTES_URL: string
 }
 
 const env = process.env as Env
