@@ -13,7 +13,9 @@ import {
 
 const router: Router = Router()
 
-router.route('/').get(authenticateUser, authorizePermissions, getAllUser)
+router
+  .route('/')
+  .get(authenticateUser, authorizePermissions('admin', 'owner'), getAllUser)
 router.route('/showMe').get(ShowCurrentUser)
 router.route('/updateUser').get(updateUser)
 router.route('/updateUserPassword').get(updateUserPassword)

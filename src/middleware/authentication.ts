@@ -34,17 +34,19 @@ export const authenticateUser = async (
   }
 }
 
-export const authorizePermissions = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  // Get permissions from request body
-  try {
-    if ((req as any).user?.role !== 'admin')
+export const authorizePermissions = (...roles: string[]) => {
+  return async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    // Get permissions from request body
+    try {
+      if (!roles.includes((req as any).user.role))
+        throw new UnauthorizedError('Unauthorized to access this route')
+      next()
+    } catch (error) {
       throw new UnauthorizedError('Unauthorized to access this route')
-    next()
-  } catch (error) {
-    throw new UnauthorizedError('Unauthorized to access this route')
+    }
   }
 }
