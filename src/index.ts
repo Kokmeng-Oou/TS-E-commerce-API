@@ -8,7 +8,7 @@ import env from './types/env'
 import cors from 'cors'
 
 // router
-import { authRoutes, userRoutes, productRoutes } from './routes'
+import { authRoutes, userRoutes, productRoutes, reviewRoutes } from './routes'
 
 // middleware
 import notFoundMiddleware from './middleware/not-found'
@@ -45,6 +45,7 @@ app.get('/', (req: Request, res: Response) => {
 app.use(`${env.ROUTES_URL}auth`, authRoutes)
 app.use(`${env.ROUTES_URL}users`, userRoutes)
 app.use(`${env.ROUTES_URL}products`, productRoutes)
+app.use(`${env.ROUTES_URL}reviews`, reviewRoutes)
 
 // middleware
 app.use(notFoundMiddleware)
