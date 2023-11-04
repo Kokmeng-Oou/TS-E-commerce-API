@@ -10,8 +10,7 @@ import env from './types/env'
 import cors from 'cors'
 
 // router
-import { authRoutes } from './routes'
-import { userRoutes } from './routes'
+import { authRoutes, userRoutes, productRoutes } from './routes'
 
 // middleware
 import notFoundMiddleware from './middleware/not-found'
@@ -41,6 +40,7 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/users', userRoutes)
+app.use('/api/v1/products', productRoutes)
 
 // middleware
 app.use(notFoundMiddleware)
