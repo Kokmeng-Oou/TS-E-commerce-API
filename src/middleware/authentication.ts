@@ -5,7 +5,6 @@ import {
   UnauthorizedError,
 } from '../errors'
 import { isTokenValid } from '../utils'
-import { JwtPayload } from 'jsonwebtoken'
 
 export const authenticateUser = async (
   req: Request,
@@ -16,6 +15,7 @@ export const authenticateUser = async (
   if (!token) throw new UnauthenticatedError('Authentication Invalid')
   try {
     const decoded = isTokenValid(token)
+    console.log(decoded)
     if (!decoded || typeof decoded === 'string')
       throw new Error('Invalid token')
     const { username, userId, role } = decoded

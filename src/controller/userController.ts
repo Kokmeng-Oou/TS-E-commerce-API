@@ -21,7 +21,7 @@ export const getSingleUser = asyncWrapper(
 
 export const ShowCurrentUser = asyncWrapper(
   async (req: Request, res: Response) => {
-    res.send('show all user')
+    res.status(StatusCodes.OK).json({ user: (req as any).user })
   }
 )
 
