@@ -28,13 +28,17 @@ const createReview = asyncWrapper(
 
 const getAllReview = asyncWrapper(
   async (req: Request, res: Response): Promise<void> => {
-    res.send('getAllReview')
+    const reviews = await Review.find({})
+    res.status(StatusCodes.OK).json({ reviews, count: reviews.length })
   }
 )
 
 const getSingleReview = asyncWrapper(
   async (req: Request, res: Response): Promise<void> => {
-    res.send('getSingleReview')
+    const { id: reviewId } = req.params
+    const review = await Review.findById(reviewId)
+    if (!review) throw new NotFoundError('Review not found')
+    res.status(StatusCodes.OK).json({ review })
   }
 )
 
