@@ -2,7 +2,8 @@ import { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import asyncWrapper from '../middleware/async'
 import Product from '../models/Product'
-import { CustomAPIError, NotFoundError } from '../errors'
+import { BadRequestError, NotFoundError } from '../errors'
+import path from 'path'
 
 export const createProduct = asyncWrapper(
   async (req: Request, res: Response) => {
@@ -52,5 +53,19 @@ export const deleteProduct = asyncWrapper(
 )
 
 export const uploadImage = asyncWrapper(async (req: Request, res: Response) => {
-  res.send('function name')
+  console.log(req.files)
+  if (!req.files) throw new BadRequestError('No file Uploaded')
+  const productsImage: any = req.files.image
+  if (!productsImage.mimetype.startsWith('image'))
+    throw new BadRequestError('Please Upload Image')
+
+  const maxSize = 1024 * 1024
+  if (productsImage.size > maxSize)
+    throw new BadRequestError('Please Upload image smaller than 1MB')
+  const ImagePath = path.join(
+    __dirname,
+    '../../public/uploads/' + `${productsImage.name}`
+  )
+  await productsImage.mv(ImagePath)
+  res.status(StatusCodes.OK).json({ image: `/uploads/ ${productsImage.name}` })
 })

@@ -1,6 +1,4 @@
 import express, { Request, Response, Express } from 'express'
-import 'express-async-errors'
-import cookieParser from 'cookie-parser'
 
 // Database
 import connectDB from './database/connect'
@@ -18,6 +16,9 @@ import errorHandlerMiddleware from './middleware/error-handler'
 
 // rest of the package
 import morgan from 'morgan'
+import 'express-async-errors'
+import cookieParser from 'cookie-parser'
+import fileUpload from 'express-fileupload'
 
 // express logic
 const app: Express = express()
@@ -32,6 +33,9 @@ app.use(cors(corsOption))
 app.use(morgan('tiny'))
 app.use(express.json())
 app.use(cookieParser(env.JWT_SECRET))
+
+app.use(express.static('./public'))
+app.use(fileUpload())
 
 app.get('/', (req: Request, res: Response) => {
   console.log(req.signedCookies)

@@ -36,7 +36,7 @@ const productSchema = new mongoose.Schema<products>(
     image: {
       type: String,
       required: [true, 'Please provide product image url'],
-      default: '/uploads/example.jpeg',
+      default: '/uploads/example.jpg',
     },
     category: {
       type: String,
