@@ -4,7 +4,7 @@ import { StatusCodes } from 'http-status-codes'
 import { BadRequestError, UnauthenticatedError } from '../errors'
 import asyncWrapper from '../middleware/async'
 import { UserType, TokenUserType } from '../types/user-type'
-import { attachCookiesToResponse } from '../utils'
+import { attachCookiesToResponse, createTokenUser } from '../utils'
 
 export const register = asyncWrapper(async (req: Request, res: Response) => {
   const { username, email, password }: UserType = req.body
@@ -20,11 +20,7 @@ export const register = asyncWrapper(async (req: Request, res: Response) => {
   const role = isFirstAccount ? 'admin' : 'user'
 
   const user = await User.create({ username, email, password, role })
-  const tokenUser: TokenUserType = {
-    username: user.username,
-    userId: user._id,
-    role: user.role,
-  }
+  const tokenUser: TokenUserType = createTokenUser(user)
   //cookie
   attachCookiesToResponse({ res, user: tokenUser })
   res.status(StatusCodes.CREATED).json({ user: tokenUser })
@@ -40,14 +36,10 @@ export const login = asyncWrapper(async (req: Request, res: Response) => {
     req.body.password
   )
   if (!isPasswordMatch) throw new UnauthenticatedError('Invalid Credentials')
-  const tokenUser: TokenUserType = {
-    username: userEmail.username,
-    userId: userEmail._id,
-    role: userEmail.role,
-  }
+  const tokenUser: TokenUserType = createTokenUser(userEmail)
   //cookie
   attachCookiesToResponse({ res, user: tokenUser })
-  res.status(StatusCodes.CREATED).json({ user: tokenUser })
+  res.status(StatusCodes.OK).json({ user: tokenUser })
 })
 export const logout = async (req: Request, res: Response) => {
   res.cookie('token', 'logout', {

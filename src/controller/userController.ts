@@ -3,6 +3,7 @@ import User from '../models/User'
 import { StatusCodes } from 'http-status-codes'
 import { BadRequestError, NotFoundError, UnauthenticatedError } from '../errors'
 import asyncWrapper from '../middleware/async'
+import { attachCookiesToResponse, createTokenUser } from '../utils'
 
 export const getAllUser = asyncWrapper(async (req: Request, res: Response) => {
   const users = await User.find({ role: 'user' }).select('-password')
@@ -25,9 +26,19 @@ export const ShowCurrentUser = asyncWrapper(
   }
 )
 
-export const updateUser = asyncWrapper(
-  async (req: Request, res: Response) => {}
-)
+export const updateUser = asyncWrapper(async (req: Request, res: Response) => {
+  const { email, username } = req.body
+  if (!email || !username)
+    throw new BadRequestError('Please provide all values')
+  const user = await User.findOneAndUpdate(
+    { _id: (req as any).user.userId },
+    { email, username },
+    { new: true, runValidators: true, select: '-password' } // don't return password hash
+  )
+  const TokenUser = createTokenUser(user)
+  attachCookiesToResponse({ res, user: TokenUser })
+  res.status(StatusCodes.OK).json({ user: TokenUser })
+})
 
 export const updateUserPassword = asyncWrapper(
   async (req: Request, res: Response) => {
