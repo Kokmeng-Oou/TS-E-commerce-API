@@ -17,8 +17,8 @@ router
   .route('/')
   .get(authenticateUser, authorizePermissions('admin', 'owner'), getAllUser)
 router.route('/showMe').get(authenticateUser, ShowCurrentUser)
-router.route('/updateUser').get(updateUser)
-router.route('/updateUserPassword').get(updateUserPassword)
+router.route('/updateUser').patch(updateUser)
+router.route('/updateUserPassword').patch(authenticateUser, updateUserPassword)
 router.route('/:id').get(authenticateUser, getSingleUser)
 
 export default router
