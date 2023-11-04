@@ -1,14 +1,9 @@
-import mongoose, { Document, Model } from 'mongoose'
+import mongoose, { Document } from 'mongoose'
 
 import validator from 'validator'
 import bcrypt from 'bcryptjs'
 
-interface IUser {
-  username: string
-  email: string
-  password: string
-  role: 'admin' | 'user'
-}
+import { IUser } from '../interfaces'
 
 interface IUserDocument extends IUser, Document {
   createdAt: Date
@@ -20,7 +15,7 @@ const userSchema: mongoose.Schema<IUserDocument> = new mongoose.Schema({
   username: {
     type: String,
     required: [true, 'Username is required'],
-    unique: [true, 'Username is already taken'],
+    unique: true,
     trim: true,
     minlength: 3,
   },
@@ -43,7 +38,7 @@ const userSchema: mongoose.Schema<IUserDocument> = new mongoose.Schema({
     enum: ['admin', 'user'],
     default: 'user',
   },
-} as any) // <-- add this
+}) // <-- add this
 
 userSchema.pre('save', async function (this: IUserDocument) {
   const salt = await bcrypt.genSalt(10)

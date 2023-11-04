@@ -1,14 +1,14 @@
 import mongoose, { ObjectId } from 'mongoose'
+// import { IUser } from './User' // Define an interface that extends Document and includes the properties and methods of the user schema
+// import { IProducts } from './Product'
+import { IReview } from '../interfaces'
 
-interface IReview {
-  title: string
-  rating: number
-  comment: string
-  user: ObjectId
-  product: ObjectId
+interface IReviewDocument extends IReview, Document {
+  createdAt: Date
+  updatedAt: Date
 }
 
-const reviewSchema = new mongoose.Schema<IReview>(
+const reviewSchema = new mongoose.Schema<IReviewDocument>(
   {
     title: { type: String, required: [true, 'Title is required'] },
     rating: {
@@ -19,12 +19,12 @@ const reviewSchema = new mongoose.Schema<IReview>(
     },
     comment: { type: String, required: [true, 'Comment is required'] },
     user: {
-      type: mongoose.Schema.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true,
     },
     product: {
-      type: mongoose.Schema.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Product',
       required: true,
     },
@@ -36,4 +36,4 @@ const reviewSchema = new mongoose.Schema<IReview>(
 
 reviewSchema.index({ product: 1, user: 1 }, { unique: true })
 
-export default mongoose.model<IReview>('review', reviewSchema)
+export default mongoose.model<IReviewDocument>('review', reviewSchema)

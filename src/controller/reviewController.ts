@@ -25,10 +25,18 @@ const createReview = asyncWrapper(
     res.status(StatusCodes.CREATED).json({ review })
   }
 )
-
 const getAllReview = asyncWrapper(
   async (req: Request, res: Response): Promise<void> => {
     const reviews = await Review.find({})
+      .populate({
+        path: 'product',
+        select: 'name company price',
+      })
+      .populate({
+        path: 'user',
+        select: 'name email',
+      })
+      .exec()
     res.status(StatusCodes.OK).json({ reviews, count: reviews.length })
   }
 )

@@ -1,21 +1,7 @@
-import mongoose, { ObjectId } from 'mongoose'
+import mongoose, { Document } from 'mongoose'
+import { IProducts } from '../interfaces'
 
-interface products {
-  name: string
-  price: number
-  description: string
-  image: string
-  category: string
-  company: string
-  colors: string[]
-  featured: boolean
-  freeShipping: boolean
-  inventory: Number
-  averageRating: number
-  user: ObjectId
-}
-
-const productSchema = new mongoose.Schema<products>(
+const productSchema: mongoose.Schema<IProducts> = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -74,7 +60,7 @@ const productSchema = new mongoose.Schema<products>(
       default: 0,
     },
     user: {
-      type: mongoose.SchemaTypes.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: [true, 'Product must belong to a admin'],
     },
@@ -84,4 +70,4 @@ const productSchema = new mongoose.Schema<products>(
   }
 )
 
-export default mongoose.model<products>('Products', productSchema)
+export default mongoose.model<IProducts>('Product', productSchema)
