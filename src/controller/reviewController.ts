@@ -44,7 +44,36 @@ const getSingleReview = asyncWrapper(
 
 const updateReview = asyncWrapper(
   async (req: Request, res: Response): Promise<void> => {
-    res.send('updateReview')
+    const { id: reviewId } = req.params
+    const { rating, title, comment } = req.body
+    const review = await Review.findOne({
+      _id: reviewId,
+    })
+    if (!review) throw new NotFoundError('Review not found')
+    // Check permissions
+    checkPermissions((req as any).user, review.user)
+    let updatedRating = rating ?? review.rating
+    let updatedTitle = title ?? review.title
+    let updatedComment = comment ?? review.comment
+    await Review.updateOne(
+      { _id: reviewId },
+      {
+        $set: {
+          rating: updatedRating,
+          title: updatedTitle,
+          comment: updatedComment,
+        },
+      },
+      {
+        new: true,
+        runValidators: true,
+        setDefaultsOnInsert: true,
+        returnOriginal: false,
+      }
+    )
+    res.status(StatusCodes.ACCEPTED).json({
+      msg: 'Review successfully updated',
+    })
   }
 )
 
