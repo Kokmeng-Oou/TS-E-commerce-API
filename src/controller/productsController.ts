@@ -23,7 +23,9 @@ export const getAllProducts = asyncWrapper(
 export const getSingleProduct = asyncWrapper(
   async (req: Request, res: Response) => {
     const { id: productId } = req.params
-    const product = await Product.findById({ _id: productId })
+    const product = await Product.findById({ _id: productId }).populate(
+      'review'
+    )
     if (!product) throw new NotFoundError('No such product exists')
     res.status(StatusCodes.OK).json({ product })
   }
