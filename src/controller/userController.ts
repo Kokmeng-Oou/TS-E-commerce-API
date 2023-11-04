@@ -3,7 +3,11 @@ import User from '../models/User'
 import { StatusCodes } from 'http-status-codes'
 import { BadRequestError, NotFoundError, UnauthenticatedError } from '../errors'
 import asyncWrapper from '../middleware/async'
-import { attachCookiesToResponse, createTokenUser } from '../utils'
+import {
+  attachCookiesToResponse,
+  createTokenUser,
+  checkPermissions,
+} from '../utils'
 
 export const getAllUser = asyncWrapper(async (req: Request, res: Response) => {
   const users = await User.find({ role: 'user' }).select('-password')
@@ -22,6 +26,9 @@ export const getSingleUser = asyncWrapper(
 
 export const ShowCurrentUser = asyncWrapper(
   async (req: Request, res: Response) => {
+    const user = await User.findOne({ _id: req.params.id }).select('-password')
+    if (!user) throw new NotFoundError(`No user with id: ${req.params.id}`)
+    checkPermissions((req as any).user, user._id)
     res.status(StatusCodes.OK).json({ user: (req as any).user })
   }
 )
