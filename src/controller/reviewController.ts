@@ -3,7 +3,7 @@ import { Request, Response } from 'express'
 import Review from '../models/Review'
 import Product from '../models/Product'
 import { StatusCodes } from 'http-status-codes'
-import { BadRequestError, NotFoundError } from '../errors'
+import { NotFoundError } from '../errors'
 import { checkPermissions } from '../utils'
 
 const createReview = asyncWrapper(
@@ -96,10 +96,19 @@ const deleteReview = asyncWrapper(
   }
 )
 
+const getSingleProductReviews = asyncWrapper(
+  async (req: Request, res: Response) => {
+    const productId = req.params.id?.toString() || ''
+    const reviews = await Review.find({ product: productId })
+    res.status(StatusCodes.OK).json({ reviews, count: reviews.length })
+  }
+)
+
 export {
   deleteReview,
   updateReview,
   getSingleReview,
   getAllReview,
   createReview,
+  getSingleProductReviews,
 }

@@ -79,4 +79,13 @@ productSchema.virtual('review', {
   justOne: false,
 })
 
+productSchema.pre(
+  'deleteOne',
+  { document: true, query: false },
+  async function (next) {
+    await mongoose.model('review').deleteMany({ product: this._id })
+    next()
+  }
+)
+
 export default mongoose.model<IProducts>('Product', productSchema)

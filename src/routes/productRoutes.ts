@@ -7,6 +7,9 @@ import {
   deleteProduct,
   uploadImage,
 } from '../controller/productsController'
+
+import { getSingleProductReviews } from '../controller/reviewController'
+
 import {
   authenticateUser,
   authorizePermissions,
@@ -27,5 +30,7 @@ router
   .get(getSingleProduct)
   .patch([authenticateUser, authorizePermissions('admin')], updateProduct)
   .delete([authenticateUser, authorizePermissions('admin')], deleteProduct)
+
+router.route('/:id/reviews').get(getSingleProductReviews)
 
 export default router
