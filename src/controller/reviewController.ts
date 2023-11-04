@@ -50,7 +50,12 @@ const updateReview = asyncWrapper(
 
 const deleteReview = asyncWrapper(
   async (req: Request, res: Response): Promise<void> => {
-    res.send('deleteReview')
+    const { id: reviewId } = req.params
+    const review = await Review.findOne({ _id: reviewId })
+    if (!review) throw new NotFoundError('Review not found')
+    checkPermissions((req as any).user, review.user)
+    await review.deleteOne()
+    res.status(StatusCodes.OK).json({ msg: 'Successfully delete the review' })
   }
 )
 
